@@ -1,0 +1,40 @@
+version: '2.1'
+services:
+  service1:
+    build: ./Service1
+    volumes:
+      - ./Service1:/usr/src/app1
+      - /usr/app/node_modules
+    command: npm run start
+    ports:
+      - 8080:8080
+    environment:
+      NODE_ENV: docker
+    networks:
+      - backend-tier
+    depends_on:
+      - redis
+  service2:
+    build: ./Service2
+    volumes:
+      - ./Service2:/usr/src/app2
+      - /usr/app/node_modules
+    command: npm run start
+    ports:
+      - 8081:8081
+    environment:
+      NODE_ENV: docker
+    networks:
+      - backend-tier
+    depends_on:
+      - redis
+  redis:
+    image: redis:alpine
+    container_name: cache
+    ports:
+      - 6379:6379
+    networks:
+      - backend-tier
+
+networks:
+  backend-tier:
